@@ -63,7 +63,7 @@
 			for (let i = 1; i <= numColors; i++) {
 				const html = `
 					<div class="csg-color-input-group">
-						<label>Color ${i}</label>
+						<label><?php esc_html_e( '色', 'color-swatch-generator' ); ?> ${i}</label>
 						<input 
 							type="text" 
 							class="csg-color-picker" 
@@ -159,11 +159,11 @@
 			const searchTerm = this.$colorSearch.val().trim();
 
 			if (!searchTerm) {
-				this.showMessage('Please enter a color name or hex code', 'error');
+					this.showMessage('色の名前またはHexコードを入力してください', 'error');
 				return;
 			}
 
-			this.showMessage('Searching...', 'info');
+			this.showMessage('検索中...', 'info');
 
 			$.ajax({
 				url: csgData.ajaxUrl,
@@ -177,11 +177,11 @@
 					if (response.success) {
 						this.displaySearchResults(response.data.colors);
 					} else {
-						this.showMessage('No colors found', 'error');
+						this.showMessage('色が見つかりません', 'error');
 					}
 				},
 				error: () => {
-					this.showMessage('Search failed', 'error');
+					this.showMessage('検索に失敗しました', 'error');
 				}
 			});
 		},
@@ -237,7 +237,7 @@
 			$targetInput.val(color).trigger('change');
 			this.$colorSearch.val('');
 			this.$searchResults.html('');
-			this.showMessage('Color added', 'success');
+			this.showMessage('色を追加しました', 'success');
 		},
 
 		// Update preview
@@ -289,7 +289,7 @@
 			for (let i = 1; i <= numColors; i++) {
 				const color = $(`.csg-color-picker[data-index="${i}"]`).val();
 				if (!this.isValidHex(color)) {
-					this.showMessage(`Please enter a valid color for Color ${i}`, 'error');
+					this.showMessage(`色 ${i} に有効な色コードを入力してください`, 'error');
 					return;
 				}
 				colors.push(color);
@@ -321,7 +321,7 @@
 					}
 				},
 				error: () => {
-					this.showMessage('Generation failed. Please try again.', 'error');
+					this.showMessage('GIF生成に失敗しました。もう一度お試しください。', 'error');
 				},
 				complete: () => {
 					this.$generateBtn.prop('disabled', false).text(csgData.i18n.generate);

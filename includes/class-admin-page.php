@@ -23,8 +23,8 @@ class CSG_Admin_Page {
 	 */
 	public static function add_admin_menu() {
 		add_menu_page(
-			__( 'Color Swatch Generator', 'color-swatch-generator' ),
-			__( 'Color Swatches', 'color-swatch-generator' ),
+			__( 'カラースウォッチジェネレーター', 'color-swatch-generator' ),
+			__( 'カラースウォッチ', 'color-swatch-generator' ),
 			'upload_files',
 			'color-swatch-generator',
 			array( __CLASS__, 'render_page' ),
@@ -71,16 +71,16 @@ class CSG_Admin_Page {
 				'ajaxUrl'   => admin_url( 'admin-ajax.php' ),
 				'nonce'     => wp_create_nonce( 'csg_nonce' ),
 				'i18n'      => array(
-					'selectColors'    => __( 'Select Colors', 'color-swatch-generator' ),
-					'search'          => __( 'Search', 'color-swatch-generator' ),
-					'generate'        => __( 'Generate Swatch', 'color-swatch-generator' ),
-					'generating'      => __( 'Generating...', 'color-swatch-generator' ),
-					'uploading'       => __( 'Uploading...', 'color-swatch-generator' ),
-					'success'         => __( 'Success!', 'color-swatch-generator' ),
-					'error'           => __( 'Error', 'color-swatch-generator' ),
-					'uploadSuccess'   => __( 'Color swatch uploaded to media library', 'color-swatch-generator' ),
-					'enterHex'        => __( 'Enter hex color code', 'color-swatch-generator' ),
-					'colorName'       => __( 'Color name or hex code', 'color-swatch-generator' ),
+					'selectColors'    => __( '色を選択', 'color-swatch-generator' ),
+					'search'          => __( '検索', 'color-swatch-generator' ),
+					'generate'        => __( 'スウォッチを生成', 'color-swatch-generator' ),
+					'generating'      => __( '生成中...', 'color-swatch-generator' ),
+					'uploading'       => __( 'アップロード中...', 'color-swatch-generator' ),
+					'success'         => __( '成功しました！', 'color-swatch-generator' ),
+					'error'           => __( 'エラー', 'color-swatch-generator' ),
+					'uploadSuccess'   => __( 'カラースウォッチをメディアライブラリにアップロードしました', 'color-swatch-generator' ),
+					'enterHex'        => __( 'Hexカラーコードを入力', 'color-swatch-generator' ),
+					'colorName'       => __( '色の名前またはHexコード', 'color-swatch-generator' ),
 				),
 			)
 		);
@@ -97,23 +97,23 @@ class CSG_Admin_Page {
 			<div class="csg-container">
 				<div class="csg-main">
 					<div class="csg-section">
-						<h2><?php esc_html_e( 'Color Swatch Settings', 'color-swatch-generator' ); ?></h2>
+<h2><?php esc_html_e( 'カラースウォッチ設定', 'color-swatch-generator' ); ?></h2>
 
-						<!-- Number of Colors Selection -->
-						<div class="csg-form-group">
-							<label><?php esc_html_e( 'Number of Colors', 'color-swatch-generator' ); ?></label>
-							<div class="csg-radio-group">
-								<label>
-									<input type="radio" name="num_colors" value="1" checked>
-									<?php esc_html_e( '1 Color', 'color-swatch-generator' ); ?>
-								</label>
-								<label>
-									<input type="radio" name="num_colors" value="2">
-									<?php esc_html_e( '2 Colors', 'color-swatch-generator' ); ?>
-								</label>
-								<label>
-									<input type="radio" name="num_colors" value="3">
-									<?php esc_html_e( '3 Colors', 'color-swatch-generator' ); ?>
+					<!-- Number of Colors Selection -->
+					<div class="csg-form-group">
+						<label><?php esc_html_e( '色の数', 'color-swatch-generator' ); ?></label>
+						<div class="csg-radio-group">
+							<label>
+								<input type="radio" name="num_colors" value="1" checked>
+								<?php esc_html_e( '1色', 'color-swatch-generator' ); ?>
+							</label>
+							<label>
+								<input type="radio" name="num_colors" value="2">
+								<?php esc_html_e( '2色', 'color-swatch-generator' ); ?>
+							</label>
+							<label>
+								<input type="radio" name="num_colors" value="3">
+								<?php esc_html_e( '3色', 'color-swatch-generator' ); ?>
 								</label>
 							</div>
 						</div>
@@ -125,16 +125,16 @@ class CSG_Admin_Page {
 
 						<!-- Search and Suggestions -->
 						<div class="csg-form-group">
-							<label><?php esc_html_e( 'Color Name Search', 'color-swatch-generator' ); ?></label>
+							<label><?php esc_html_e( '色名検索', 'color-swatch-generator' ); ?></label>
 							<div class="csg-search-container">
 								<input 
 									type="text" 
 									id="color-search" 
-									placeholder="<?php esc_attr_e( 'Search by color name (English or Katakana)', 'color-swatch-generator' ); ?>"
+										placeholder="<?php esc_attr_e( '色名で検索（英語またはカタカナ）', 'color-swatch-generator' ); ?>"
 									class="regular-text"
 								>
 								<button type="button" id="search-btn" class="button">
-									<?php esc_html_e( 'Search', 'color-swatch-generator' ); ?>
+								<?php esc_html_e( '検索', 'color-swatch-generator' ); ?>
 								</button>
 							</div>
 							<div id="search-results" class="csg-search-results"></div>
@@ -142,14 +142,14 @@ class CSG_Admin_Page {
 
 						<!-- Preview -->
 						<div class="csg-form-group">
-							<label><?php esc_html_e( 'Preview', 'color-swatch-generator' ); ?></label>
+							<label><?php esc_html_e( 'プレビュー', 'color-swatch-generator' ); ?></label>
 							<div id="color-preview" class="csg-preview"></div>
 						</div>
 
 						<!-- Generate Button -->
 						<div class="csg-form-group">
 							<button type="button" id="generate-btn" class="button button-primary button-large">
-								<?php esc_html_e( 'Generate & Upload Swatch', 'color-swatch-generator' ); ?>
+							<?php esc_html_e( 'スウォッチを生成＆アップロード', 'color-swatch-generator' ); ?>
 							</button>
 						</div>
 
@@ -161,12 +161,12 @@ class CSG_Admin_Page {
 				<!-- Sidebar with Information -->
 				<div class="csg-sidebar">
 					<div class="csg-info-box">
-						<h3><?php esc_html_e( 'Information', 'color-swatch-generator' ); ?></h3>
+						<h3><?php esc_html_e( '情報', 'color-swatch-generator' ); ?></h3>
 						<ul>
-							<li><?php esc_html_e( 'Size: 250 x 250 pixels', 'color-swatch-generator' ); ?></li>
-							<li><?php esc_html_e( 'Format: GIF', 'color-swatch-generator' ); ?></li>
-							<li><?php esc_html_e( 'Multiple colors are divided vertically', 'color-swatch-generator' ); ?></li>
-							<li><?php esc_html_e( 'Supports hex color input', 'color-swatch-generator' ); ?></li>
+							<li><?php esc_html_e( 'サイズ：250×250ピクセル', 'color-swatch-generator' ); ?></li>
+							<li><?php esc_html_e( 'フォーマット：GIF', 'color-swatch-generator' ); ?></li>
+							<li><?php esc_html_e( '複数色は左右に分割します', 'color-swatch-generator' ); ?></li>
+							<li><?php esc_html_e( 'Hexカラーコード入力に対応', 'color-swatch-generator' ); ?></li>
 						</ul>
 					</div>
 				</div>
@@ -183,7 +183,7 @@ class CSG_Admin_Page {
 	private static function render_color_input( $index ) {
 		?>
 		<div class="csg-color-input-group">
-			<label><?php printf( esc_html__( 'Color %d', 'color-swatch-generator' ), $index ); ?></label>
+			<label><?php printf( esc_html__( '色 %d', 'color-swatch-generator' ), $index ); ?></label>
 			<input 
 				type="text" 
 				class="csg-color-picker" 

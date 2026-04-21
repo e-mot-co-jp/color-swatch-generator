@@ -30,7 +30,7 @@ class CSG_AJAX_Handler {
 		check_ajax_referer( 'csg_nonce', 'nonce' );
 
 		if ( ! isset( $_POST['search'] ) ) {
-			wp_send_json_error( array( 'message' => 'Missing search parameter' ) );
+			wp_send_json_error( array( 'message' => __( '検索パラメータが見つかりません', 'color-swatch-generator' ) ) );
 		}
 
 		$search_term = sanitize_text_field( $_POST['search'] );
@@ -49,11 +49,11 @@ class CSG_AJAX_Handler {
 
 		// Check user capability
 		if ( ! current_user_can( 'upload_files' ) ) {
-			wp_send_json_error( array( 'message' => 'Insufficient permissions' ) );
+			wp_send_json_error( array( 'message' => __( '権限が不足しています', 'color-swatch-generator' ) ) );
 		}
 
 		if ( ! isset( $_POST['colors'] ) || ! isset( $_POST['num_colors'] ) ) {
-			wp_send_json_error( array( 'message' => 'Missing required parameters' ) );
+			wp_send_json_error( array( 'message' => __( '必須パラメータが見つかりません', 'color-swatch-generator' ) ) );
 		}
 
 		$colors = isset( $_POST['colors'] ) ? array_map( 'sanitize_text_field', (array) $_POST['colors'] ) : array();
@@ -61,14 +61,14 @@ class CSG_AJAX_Handler {
 
 		// Validate inputs
 		if ( empty( $colors ) || $num_colors < 1 || $num_colors > 3 ) {
-			wp_send_json_error( array( 'message' => 'Invalid color count' ) );
+			wp_send_json_error( array( 'message' => __( '無効な色の数です', 'color-swatch-generator' ) ) );
 		}
 
 		// Generate GIF
 		$file_path = CSG_GIF_Generator::generate( $colors, $num_colors );
 
 		if ( ! $file_path ) {
-			wp_send_json_error( array( 'message' => 'Failed to generate GIF' ) );
+			wp_send_json_error( array( 'message' => __( 'GIFの生成に失敗しました', 'color-swatch-generator' ) ) );
 		}
 
 		// Upload to media library
@@ -76,7 +76,7 @@ class CSG_AJAX_Handler {
 		$attachment_id = CSG_GIF_Generator::upload_to_media_library( $file_path, $color_info );
 
 		if ( ! $attachment_id ) {
-			wp_send_json_error( array( 'message' => 'Failed to upload to media library' ) );
+			wp_send_json_error( array( 'message' => __( 'メディアライブラリへのアップロードに失敗しました', 'color-swatch-generator' ) ) );
 		}
 
 		// Get attachment details
@@ -87,7 +87,7 @@ class CSG_AJAX_Handler {
 			'attachment_id' => $attachment_id,
 			'url'           => $attachment_url,
 			'title'         => $attachment->post_title,
-			'message'       => 'Color swatch generated and uploaded successfully',
+			'message'       => __( 'カラースウォッチが正常に生成およびアップロードされました', 'color-swatch-generator' ),
 		) );
 	}
 

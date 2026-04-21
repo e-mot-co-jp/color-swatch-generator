@@ -1,8 +1,8 @@
 <?php
 /**
- * Plugin Name: Color Swatch Generator
+ * Plugin Name: カラースウォッチジェネレーター
  * Plugin URI: https://e-mot.co.jp
- * Description: Generates color swatch GIF images for product variations with color picker and name search
+ * Description: バリエーション商品用のカラースウォッチGIF画像を生成。カラーピッカーと色名検索機能を搭載
  * Version: 1.0.0
  * Author: e-mot
  * Author URI: https://e-mot.co.jp
