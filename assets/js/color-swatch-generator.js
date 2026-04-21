@@ -264,17 +264,17 @@
 				}
 			}
 
-			const totalHeight = 250;
-			const colorHeight = Math.floor(totalHeight / numColors);
+			const totalWidth = 250;
+			const colorWidth = Math.floor(totalWidth / numColors);
 			
-			// Build preview HTML with explicit vertical split
-			let previewHtml = '<div class="csg-preview-box" style="display: flex; flex-direction: column; width: 250px; height: 250px; border: 1px solid #CCC; margin: 0 auto; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); border-radius: 3px; overflow: hidden;">';
+			// Build preview HTML with horizontal (left-right) split - using flex-direction: row
+			let previewHtml = '<div class="csg-preview-box" style="display: flex; flex-direction: row; width: 250px; height: 250px; border: 1px solid #CCC; margin: 0 auto; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); border-radius: 3px; overflow: hidden;">';
 
 			colors.forEach((color, index) => {
 				const isLast = (index === colors.length - 1);
-				// Last color takes remaining height to avoid rounding errors
-				const height = isLast ? (totalHeight - (colorHeight * index)) : colorHeight;
-				previewHtml += `<div style="background-color: ${color}; width: 100%; height: ${height}px; display: block; flex: 0 0 ${height}px;"></div>`;
+				// Last color takes remaining width to avoid rounding errors
+				const width = isLast ? (totalWidth - (colorWidth * index)) : colorWidth;
+				previewHtml += `<div style="background-color: ${color}; width: ${width}px; height: 100%; display: block; flex: 0 0 ${width}px;"></div>`;
 			});
 
 			previewHtml += '</div>';
