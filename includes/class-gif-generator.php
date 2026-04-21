@@ -31,18 +31,18 @@ class CSG_GIF_Generator {
 			return false;
 		}
 
-		// Create image
+		// Create image - vertical split (height / colors, width = 250)
 		$image = imagecreatetruecolor( self::SIZE, self::SIZE );
 		if ( ! $image ) {
 			return false;
 		}
 
-		// Calculate height per color
+		// Calculate height per color (vertical split - each color takes equal height)
 		$color_height = intval( self::SIZE / $num_colors );
 		$y_offset = 0;
 
-		// Fill each color section
-		foreach ( $colors as $color ) {
+		// Fill each color section vertically (top to bottom)
+		foreach ( $colors as $index => $color ) {
 			$rgb = self::hex_to_rgb( $color );
 			$color_int = imagecolorallocate( $image, $rgb['r'], $rgb['g'], $rgb['b'] );
 			
@@ -51,16 +51,22 @@ class CSG_GIF_Generator {
 				return false;
 			}
 
+			// For the last color, extend to the bottom to avoid rounding errors
+			$height = ( $index === count( $colors ) - 1 ) ? 
+				( self::SIZE - $y_offset ) : 
+				$color_height;
+
+			// Draw rectangle: top-left (0, y_offset) to bottom-right (SIZE, y_offset + height)
 			imagefilledrectangle(
 				$image,
 				0,
 				$y_offset,
 				self::SIZE,
-				$y_offset + $color_height,
+				$y_offset + $height,
 				$color_int
 			);
 
-			$y_offset += $color_height;
+			$y_offset += $height;
 		}
 
 		// Save GIF image
