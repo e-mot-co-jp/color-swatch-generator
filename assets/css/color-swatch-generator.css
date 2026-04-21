@@ -2,7 +2,15 @@
 
 .csg-wrap {
 	display: flex;
+	flex-direction: column;
 	margin-top: 20px;
+}
+
+.csg-wrap h1 {
+	width: 100%;
+	margin-bottom: 20px;
+	padding-bottom: 10px;
+	border-bottom: 2px solid #0073aa;
 }
 
 .csg-container {
