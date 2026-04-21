@@ -38,13 +38,22 @@
 			});
 			this.$generateBtn.on('click', () => this.handleGenerateSwatch());
 			$(document).on('change', '.csg-color-picker', (e) => this.handleColorChange(e));
+			$(document).on('input', '.csg-color-picker', (e) => {
+				const $input = $(e.target);
+				const index = $input.data('index');
+				const color = $input.val();
+				this.updateColorSwatch(index, color);
+				this.updatePreview();
+			});
 		},
 
 		// Handle number of colors change
 		handleNumColorsChange(e) {
 			const numColors = parseInt($(e.target).val());
 			this.renderColorInputs(numColors);
-			this.updatePreview();
+			setTimeout(() => {
+				this.updatePreview();
+			}, 200);
 		},
 
 		// Render color input fields
@@ -79,6 +88,7 @@
 
 		// Initialize color picker for new inputs
 		initColorPickers() {
+			const self = this;
 			$('.csg-color-picker').each((index, element) => {
 				const $input = $(element);
 				
@@ -89,26 +99,22 @@
 				
 				$input.wpColorPicker({
 					change: (e, ui) => {
-						const $input = $(e.target);
-						const index = $input.data('index');
-						const color = ui.color.toString();
+						const $target = $(e.target);
+						const idx = $target.data('index');
+						const color = $target.val();
 						
 						// Update swatch
-						this.updateColorSwatch(index, color);
-						this.updatePreview();
+						self.updateColorSwatch(idx, color);
+						
+						// Update preview after a small delay
+						setTimeout(() => {
+							self.updatePreview();
+						}, 50);
 					},
 					clear: () => {
-						this.updatePreview();
+						self.updatePreview();
 					},
-					palettes: true
-				});
-				
-				// Trigger change on input blur
-				$input.on('blur', () => {
-					const index = $input.data('index');
-					const color = $input.val();
-					this.updateColorSwatch(index, color);
-					this.updatePreview();
+					palettes: ['#FF0000', '#FFA500', '#FFFF00', '#00FF00', '#0000FF', '#800080', '#FFFFFF', '#000000']
 				});
 			});
 		},
@@ -258,11 +264,16 @@
 				}
 			}
 
-			const colorHeight = 250 / numColors;
-			let previewHtml = '<div class="csg-preview-box" style="width: 250px; height: 250px; border: 1px solid #CCC; display: flex; flex-direction: column;">';
+			const totalHeight = 250;
+			const colorHeight = totalHeight / numColors;
+			
+			// Build preview with inline styles that explicitly set height
+			let previewHtml = `<div class="csg-preview-box" style="width: 250px; height: ${totalHeight}px; border: 1px solid #CCC; display: flex; flex-direction: column; margin: 0 auto; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); border-radius: 3px; overflow: hidden;">`;
 
-			colors.forEach((color) => {
-				previewHtml += `<div style="background-color: ${color}; width: 100%; height: ${colorHeight}px; flex-shrink: 0;"></div>`;
+			colors.forEach((color, index) => {
+				const isLast = (index === colors.length - 1);
+				const heightStyle = isLast ? 'height: ' + (totalHeight - (colorHeight * index)) + 'px' : 'height: ' + colorHeight + 'px';
+				previewHtml += `<div style="background-color: ${color}; width: 100%; ${heightStyle}; flex-shrink: 0; flex-grow: 0;"></div>`;
 			});
 
 			previewHtml += '</div>';

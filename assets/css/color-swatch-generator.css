@@ -192,15 +192,20 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	background: #fafafa;
+	border-radius: 3px;
 }
 
 .csg-preview-box {
 	display: flex;
 	flex-direction: column;
+	flex-wrap: nowrap;
 	margin: 0 auto;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 	border-radius: 3px;
 	overflow: hidden;
+	width: 250px;
+	height: 250px;
 }
 
 /* Sidebar */
