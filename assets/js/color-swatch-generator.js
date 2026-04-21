@@ -265,15 +265,16 @@
 			}
 
 			const totalHeight = 250;
-			const colorHeight = totalHeight / numColors;
+			const colorHeight = Math.floor(totalHeight / numColors);
 			
-			// Build preview with inline styles that explicitly set height
-			let previewHtml = `<div class="csg-preview-box" style="width: 250px; height: ${totalHeight}px; border: 1px solid #CCC; display: flex; flex-direction: column; margin: 0 auto; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); border-radius: 3px; overflow: hidden;">`;
+			// Build preview HTML with explicit vertical split
+			let previewHtml = '<div class="csg-preview-box" style="display: flex; flex-direction: column; width: 250px; height: 250px; border: 1px solid #CCC; margin: 0 auto; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); border-radius: 3px; overflow: hidden;">';
 
 			colors.forEach((color, index) => {
 				const isLast = (index === colors.length - 1);
-				const heightStyle = isLast ? 'height: ' + (totalHeight - (colorHeight * index)) + 'px' : 'height: ' + colorHeight + 'px';
-				previewHtml += `<div style="background-color: ${color}; width: 100%; ${heightStyle}; flex-shrink: 0; flex-grow: 0;"></div>`;
+				// Last color takes remaining height to avoid rounding errors
+				const height = isLast ? (totalHeight - (colorHeight * index)) : colorHeight;
+				previewHtml += `<div style="background-color: ${color}; width: 100%; height: ${height}px; display: block; flex: 0 0 ${height}px;"></div>`;
 			});
 
 			previewHtml += '</div>';
