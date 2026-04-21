@@ -70,24 +70,46 @@
 
 			// Initialize color pickers
 			this.initColorPickers();
+			
+			// Update preview after small delay to ensure pickers are ready
+			setTimeout(() => {
+				this.updatePreview();
+			}, 100);
 		},
 
 		// Initialize color picker for new inputs
 		initColorPickers() {
-			$('.csg-color-picker').wpColorPicker({
-				change: (e) => {
-					const $input = $(e.target);
-					const index = $input.data('index');
-					const color = $input.val();
-					
-					if (this.isValidHex(color)) {
+			$('.csg-color-picker').each((index, element) => {
+				const $input = $(element);
+				
+				// Skip if already initialized
+				if ($input.hasClass('wp-color-picker')) {
+					return;
+				}
+				
+				$input.wpColorPicker({
+					change: (e, ui) => {
+						const $input = $(e.target);
+						const index = $input.data('index');
+						const color = ui.color.toString();
+						
+						// Update swatch
 						this.updateColorSwatch(index, color);
 						this.updatePreview();
-					}
-				},
-				clear: () => {
+					},
+					clear: () => {
+						this.updatePreview();
+					},
+					palettes: true
+				});
+				
+				// Trigger change on input blur
+				$input.on('blur', () => {
+					const index = $input.data('index');
+					const color = $input.val();
+					this.updateColorSwatch(index, color);
 					this.updatePreview();
-				}
+				});
 			});
 		},
 
@@ -105,10 +127,25 @@
 
 		// Update color swatch preview
 		updateColorSwatch(index, color) {
+			let normalizedColor = color ? color.toString().trim() : '#FFFFFF';
+			
+			// Add # if missing
+			if (normalizedColor && !normalizedColor.startsWith('#')) {
+				normalizedColor = '#' + normalizedColor;
+			}
+			
+			// Ensure valid hex format, otherwise use white
+			if (!this.isValidHex(normalizedColor)) {
+				normalizedColor = '#FFFFFF';
+			}
+			
 			const $input = $(`.csg-color-picker[data-index="${index}"]`);
 			const $group = $input.closest('.csg-color-input-group');
 			const $swatch = $group.find('.csg-color-swatch');
-			$swatch.css('background-color', color);
+			
+			if ($swatch.length) {
+				$swatch.css('background-color', normalizedColor);
+			}
 		},
 
 		// Handle color search
@@ -203,8 +240,18 @@
 			const colors = [];
 
 			for (let i = 1; i <= numColors; i++) {
-				const color = $(`.csg-color-picker[data-index="${i}"]`).val();
-				if (this.isValidHex(color)) {
+				let color = $(`.csg-color-picker[data-index="${i}"]`).val().trim();
+				
+				// Normalize color value
+				if (color && !color.startsWith('#')) {
+					color = '#' + color;
+				}
+				
+				if (color && this.isValidHex(color)) {
+					// Ensure color is 6-char hex with #
+					if (color.length === 4) { // 3-char hex like #RGB
+						color = '#' + color.substring(1).split('').map(x => x + x).join('');
+					}
 					colors.push(color);
 				} else {
 					colors.push('#FFFFFF');
@@ -212,10 +259,10 @@
 			}
 
 			const colorHeight = 250 / numColors;
-			let previewHtml = '<div class="csg-preview-box" style="width: 250px; height: 250px; border: 1px solid #CCC;">';
+			let previewHtml = '<div class="csg-preview-box" style="width: 250px; height: 250px; border: 1px solid #CCC; display: flex; flex-direction: column;">';
 
 			colors.forEach((color) => {
-				previewHtml += `<div style="background-color: ${color}; width: 100%; height: ${colorHeight}px;"></div>`;
+				previewHtml += `<div style="background-color: ${color}; width: 100%; height: ${colorHeight}px; flex-shrink: 0;"></div>`;
 			});
 
 			previewHtml += '</div>';
@@ -289,8 +336,10 @@
 
 		// Validate hex color
 		isValidHex(color) {
-			const hex = color.replace('#', '');
-			return /^[0-9A-Fa-f]{6}$/.test(hex);
+			if (!color) return false;
+			const hex = color.toString().replace('#', '').trim();
+			// 3文字または6文字のhexコードを検証
+			return /^[0-9A-Fa-f]{3}$|^[0-9A-Fa-f]{6}$/.test(hex);
 		},
 
 		// Show message
@@ -312,11 +361,16 @@
 
 	// Initialize on document ready
 	$(document).ready(function() {
+		// Initialize color pickers first
+		CSG.initColorPickers();
+		
+		// Initialize the rest of the UI
 		CSG.init();
-		// Initialize color pickers after page load
+		
+		// Update preview on initial load
 		setTimeout(() => {
-			CSG.initColorPickers();
-		}, 100);
+			CSG.updatePreview();
+		}, 200);
 	});
 
 })(jQuery);
